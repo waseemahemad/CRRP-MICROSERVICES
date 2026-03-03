@@ -1,0 +1,15 @@
+@RestController
+@RequestMapping("/api/loans")
+@RequiredArgsConstructor
+public class LoanController {
+
+    private final LoanService service;
+
+    @PostMapping
+    public ResponseEntity<LoanResponseDTO> apply(
+            @RequestBody LoanRequestDTO request) {
+
+        return ResponseEntity.ok(
+                service.processLoan(request));
+    }
+}

@@ -1,0 +1,16 @@
+package com.riskassessment.demo.feign;
+
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+
+import com.riskassessment.demo.dto.FinancialResponseDTO;
+
+@FeignClient(name = "FINANCIAL")
+public interface FinancialClient {
+
+    @GetMapping("/api/financials/{customerId}/{year}")
+    FinancialResponseDTO getFinancial(
+            @PathVariable Long customerId,
+            @PathVariable Integer year);
+}

@@ -1,0 +1,31 @@
+package com.financial.demo.entity;
+@Entity
+@Table(name = "financial_statements",
+       uniqueConstraints = @UniqueConstraint(columnNames = {"customerId", "financialYear"}))
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class FinancialStatement {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private Long customerId;
+    private Integer financialYear;
+
+    private Double totalAssets;
+    private Double totalLiabilities;
+    private Double totalEquity;
+
+    private Double revenue;
+    private Double netProfit;
+
+    private Double currentAssets;
+    private Double currentLiabilities;
+
+    private Double interestExpense;
+    private Double ebit;
+}

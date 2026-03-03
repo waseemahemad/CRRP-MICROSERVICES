@@ -1,0 +1,54 @@
+package com.example.demo.service;
+
+import org.springframework.stereotype.Service;
+
+import com.example.demo.dto.RatingResponseDTO;
+import com.example.demo.entity.CreditRating;
+import com.example.demo.repository.RatingRepository;
+
+import lombok.RequiredArgsConstructor;
+
+@Service
+@RequiredArgsConstructor
+public class RatingService {
+
+     private final RiskClient riskClient;
+    private final RatingRepository repository;
+
+     public RatingResponseDTO generateRating(Long customerId,
+                                             Integer year) {
+ 
+         RiskResponseDTO risk =
+                 riskClient.assessRisk(customerId, year);
+ 
+         String rating = calculateRating(risk.getRiskScore());
+ 
+         CreditRating creditRating = CreditRating.builder()
+                 .customerId(customerId)
+                 .financialYear(year)
+                 .riskScore(risk.getRiskScore())
+                 .riskLevel(risk.getRiskLevel())
+                 .rating(rating)
+                 .build();
+ 
+         repository.save(creditRating);
+ 
+         return RatingResponseDTO.builder()
+                 .customerId(customerId)
+                 .financialYear(year)
+                 .riskScore(risk.getRiskScore())
+                 .riskLevel(risk.getRiskLevel())
+                 .rating(rating)
+                 .build();
+     }
+
+    private String calculateRating(int score) {
+
+        if (score >= 90) return "AAA";
+        if (score >= 80) return "AA";
+        if (score >= 70) return "A";
+        if (score >= 60) return "BBB";
+        if (score >= 50) return "BB";
+        return "C";
+    }
+}

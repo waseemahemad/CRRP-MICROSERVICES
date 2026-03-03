@@ -1,0 +1,29 @@
+package com.riskassessment.demo.controller;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.riskassessment.demo.dto.RiskResponseDTO;
+import com.riskassessment.demo.service.RiskService;
+
+import lombok.RequiredArgsConstructor;
+
+@RestController
+@RequestMapping("/api/risk")
+@RequiredArgsConstructor
+public class RiskController {
+
+    private final RiskService service;
+
+    @PostMapping("/{customerId}/{year}")
+    public ResponseEntity<RiskResponseDTO> assess(
+            @PathVariable Long customerId,
+            @PathVariable Integer year) {
+
+        return ResponseEntity.ok(
+                service.assessRisk(customerId, year));
+    }
+}

@@ -1,0 +1,6 @@
+public interface FinancialRepository
+        extends JpaRepository<FinancialStatement, Long> {
+
+    Optional<FinancialStatement> 
+        findByCustomerIdAndFinancialYear(Long customerId, Integer year);
+}

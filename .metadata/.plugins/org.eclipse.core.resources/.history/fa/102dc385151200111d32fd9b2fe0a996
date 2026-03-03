@@ -1,0 +1,6 @@
+@FeignClient(name = "CUSTOMER-SERVICE")
+public interface CustomerClient {
+
+    @GetMapping("/api/customers/{id}")
+    CustomerResponseDTO getCustomer(@PathVariable Long id);
+}

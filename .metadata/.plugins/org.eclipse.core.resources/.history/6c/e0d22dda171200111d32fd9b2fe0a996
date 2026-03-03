@@ -1,0 +1,26 @@
+package com.riskassessment.demo.entity;
+@Entity
+@Table(name = "risk_assessments",
+       uniqueConstraints = @UniqueConstraint(columnNames = {"customerId", "financialYear"}))
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class RiskAssessment {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private Long customerId;
+    private Integer financialYear;
+
+    private Double debtToEquity;
+    private Double currentRatio;
+    private Double interestCoverage;
+    private Double profitMargin;
+
+    private Integer riskScore;
+    private String riskLevel;
+}

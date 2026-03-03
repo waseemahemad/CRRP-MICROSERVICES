@@ -1,0 +1,22 @@
+package com.financial.demo.controller;
+@RestController
+@RequestMapping("/api/financials")
+@RequiredArgsConstructor
+public class FinancialController {
+
+    private final FinancialService service;
+
+    @PostMapping
+    public ResponseEntity<FinancialResponseDTO> create(
+            @RequestBody FinancialRequestDTO dto) {
+        return ResponseEntity.ok(service.create(dto));
+    }
+
+    @GetMapping("/{customerId}/{year}")
+    public ResponseEntity<FinancialResponseDTO> get(
+            @PathVariable Long customerId,
+            @PathVariable Integer year) {
+        return ResponseEntity.ok(
+                service.getByCustomerAndYear(customerId, year));
+    }
+}

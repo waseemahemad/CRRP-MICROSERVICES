@@ -1,0 +1,7 @@
+package com.example.demo.dto;
+@Data
+public class LoanRequestDTO {
+    private Long customerId;
+    private Integer financialYear;
+    private Double requestedAmount;
+}

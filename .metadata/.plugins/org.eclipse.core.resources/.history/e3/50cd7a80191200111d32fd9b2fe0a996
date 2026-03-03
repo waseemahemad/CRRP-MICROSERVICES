@@ -1,0 +1,8 @@
+@FeignClient(name = "RISK-SERVICE")
+public interface RiskClient {
+
+    @PostMapping("/api/risk/{customerId}/{year}")
+    RiskResponseDTO assessRisk(
+            @PathVariable Long customerId,
+            @PathVariable Integer year);
+}

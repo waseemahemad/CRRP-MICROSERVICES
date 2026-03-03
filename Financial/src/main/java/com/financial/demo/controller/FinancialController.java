@@ -1,0 +1,52 @@
+package com.financial.demo.controller;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.financial.demo.dto.FinancialRequestDTO;
+import com.financial.demo.dto.FinancialResponseDTO;
+import com.financial.demo.service.FinancialService;
+
+import lombok.RequiredArgsConstructor;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.financial.demo.dto.FinancialRequestDTO;
+import com.financial.demo.dto.FinancialResponseDTO;
+import com.financial.demo.service.FinancialService;
+
+import lombok.RequiredArgsConstructor;
+
+@RestController
+@RequestMapping("/api/financials")
+@RequiredArgsConstructor
+public class FinancialController {
+
+    private final FinancialService service;
+
+    @PostMapping
+    public ResponseEntity<FinancialResponseDTO> create(
+            @RequestBody FinancialRequestDTO dto) {
+    	System.out.println("inside controller of financial");
+        return ResponseEntity.ok(service.create(dto));
+    }
+
+    @GetMapping("/{customerId}/{year}")
+    public ResponseEntity<FinancialResponseDTO> get(
+            @PathVariable Long customerId,
+            @PathVariable Integer year) {
+        return ResponseEntity.ok(
+                service.getByCustomerAndYear(customerId, year));
+    }
+}

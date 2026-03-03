@@ -1,0 +1,26 @@
+package com.financial.demo.dto;
+
+import lombok.Builder;
+import lombok.Data;
+
+@Data
+@Builder
+public class FinancialResponseDTO {
+
+    private Long id;
+    private Long customerId;
+    private Integer financialYear;
+
+    private Double totalAssets;
+    private Double totalLiabilities;
+    private Double totalEquity;
+
+    private Double revenue;
+    private Double netProfit;
+
+    private Double currentAssets;
+    private Double currentLiabilities;
+
+    private Double interestExpense;
+    private Double ebit;
+}

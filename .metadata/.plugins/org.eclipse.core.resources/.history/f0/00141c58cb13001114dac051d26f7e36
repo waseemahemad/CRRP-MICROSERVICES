@@ -1,0 +1,151 @@
+package com.riskassessment.demo.service;
+
+import org.springframework.stereotype.Service;
+
+import com.riskassessment.demo.dto.FinancialResponseDTO;
+import com.riskassessment.demo.dto.RiskResponseDTO;
+import com.riskassessment.demo.entity.RiskAssessment;
+import com.riskassessment.demo.feign.FinancialClient;
+import com.riskassessment.demo.repository.RiskRepository;
+
+import lombok.RequiredArgsConstructor;
+
+@Service
+@RequiredArgsConstructor
+public class RiskService {
+
+    private final FinancialClient financialClient;
+    private final RiskRepository repository;
+
+    public RiskResponseDTO assessRisk(Long customerId, Integer year) {
+
+        return repository.findByCustomerIdAndFinancialYear(customerId, year)
+                .map(this::mapToDTO)
+                .orElseGet(() -> calculateAndSave(customerId, year));
+    }
+
+    private RiskResponseDTO calculateAndSave(Long customerId, Integer year) {
+
+        FinancialResponseDTO financial =
+                financialClient.getFinancial(customerId, year);
+
+     //   validateFinancialData(financial);
+
+        double debtToEquity =
+                financial.getTotalLiabilities() / financial.getTotalEquity();
+
+        double currentRatio =
+                financial.getCurrentAssets() / financial.getCurrentLiabilities();
+
+        double interestCoverage =
+                financial.getEbit() / financial.getInterestExpense();
+
+        double profitMargin =
+                financial.getNetProfit() / financial.getRevenue();
+
+        int score = calculateScore(
+                debtToEquity,
+                currentRatio,
+                interestCoverage,
+                profitMargin
+        );
+
+        String level = determineRiskLevel(score);
+
+        RiskAssessment assessment = RiskAssessment.builder()
+                .customerId(customerId)
+                .financialYear(year)
+                .debtToEquity(debtToEquity)
+                .currentRatio(currentRatio)
+                .interestCoverage(interestCoverage)
+                .profitMargin(profitMargin)
+                .riskScore(score)
+                .riskLevel(level)
+                .build();
+
+        repository.save(assessment);
+
+        return mapToDTO(assessment);
+    }
+
+    /**
+     * Validates financial data before performing ratio calculations.
+     */
+    private void validateFinancialData(FinancialResponseDTO f) {
+
+        if (f == null) {
+            throw new IllegalArgumentException("Financial data not found.");
+        }
+
+        // Debt-to-Equity validation
+//        if (f.getTotalLiabilities() == null ||
+//            f.getTotalEquity() == null ||
+//            f.getTotalEquity() == 0) {
+//            throw new IllegalArgumentException("Invalid values for Debt-to-Equity ratio.");
+//        }
+
+        // Current Ratio validation
+        if (f.getCurrentAssets() == null ||
+            f.getCurrentLiabilities() == null ||
+            f.getCurrentLiabilities() == 0) {
+            throw new IllegalArgumentException("Invalid values for Current Ratio.");
+        }
+
+        // Interest Coverage validation
+        if (f.getEbit() == null ||
+            f.getInterestExpense() == null ||
+            f.getInterestExpense() == 0) {
+            throw new IllegalArgumentException("Invalid values for Interest Coverage ratio.");
+        }
+
+        // Profit Margin validation
+        if (f.getNetProfit() == null ||
+            f.getRevenue() == null ||
+            f.getRevenue() == 0) {
+            throw new IllegalArgumentException("Invalid values for Profit Margin ratio.");
+        }
+    }
+
+    private int calculateScore(double dte,
+                               double cr,
+                               double ic,
+                               double pm) {
+
+        int score = 0;
+
+        if (dte < 1) score += 25;
+        else if (dte < 2) score += 15;
+
+        if (cr > 2) score += 25;
+        else if (cr > 1) score += 15;
+
+        if (ic > 3) score += 25;
+        else if (ic > 1.5) score += 15;
+
+        if (pm > 0.15) score += 25;
+        else if (pm > 0.05) score += 15;
+
+        return score;
+    }
+
+    private String determineRiskLevel(int score) {
+
+        if (score >= 80) return "LOW";
+        if (score >= 50) return "MEDIUM";
+        return "HIGH";
+    }
+
+    private RiskResponseDTO mapToDTO(RiskAssessment r) {
+
+        return RiskResponseDTO.builder()
+                .customerId(r.getCustomerId())
+                .financialYear(r.getFinancialYear())
+                .debtToEquity(r.getDebtToEquity())
+                .currentRatio(r.getCurrentRatio())
+                .interestCoverage(r.getInterestCoverage())
+                .profitMargin(r.getProfitMargin())
+                .riskScore(r.getRiskScore())
+                .riskLevel(r.getRiskLevel())
+                .build();
+    }
+}

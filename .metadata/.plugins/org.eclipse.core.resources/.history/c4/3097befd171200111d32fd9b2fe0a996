@@ -1,0 +1,8 @@
+@FeignClient(name = "FINANCIAL-SERVICE")
+public interface FinancialClient {
+
+    @GetMapping("/api/financials/{customerId}/{year}")
+    FinancialResponseDTO getFinancial(
+            @PathVariable Long customerId,
+            @PathVariable Integer year);
+}

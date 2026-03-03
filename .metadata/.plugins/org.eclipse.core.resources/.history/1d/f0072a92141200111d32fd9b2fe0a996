@@ -1,0 +1,20 @@
+package com.customer.demo.controller;
+@RestController
+@RequestMapping("/api/customers")
+@RequiredArgsConstructor
+public class CustomerController {
+
+    private final CustomerService service;
+
+    @PostMapping
+    public ResponseEntity<CustomerResponseDTO> create(
+            @RequestBody CustomerRequestDTO dto) {
+        return ResponseEntity.ok(service.createCustomer(dto));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<CustomerResponseDTO> get(
+            @PathVariable Long id) {
+        return ResponseEntity.ok(service.getCustomer(id));
+    }
+}
