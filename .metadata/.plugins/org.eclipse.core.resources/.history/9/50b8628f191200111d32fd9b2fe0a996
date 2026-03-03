@@ -1,7 +1,0 @@
-public interface RatingRepository
-        extends JpaRepository<CreditRating, Long> {
-
-    Optional<CreditRating>
-        findByCustomerIdAndFinancialYear(Long customerId,
-                                         Integer financialYear);
-}

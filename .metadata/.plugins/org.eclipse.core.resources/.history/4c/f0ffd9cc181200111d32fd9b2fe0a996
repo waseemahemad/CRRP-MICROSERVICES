@@ -1,9 +1,0 @@
-package com.example.demo.feign;
-@FeignClient(name = "RATING-SERVICE")
-public interface RatingClient {
-
-    @GetMapping("/api/rating/{customerId}/{year}")
-    RatingResponseDTO getRating(
-            @PathVariable Long customerId,
-            @PathVariable Integer year);
-}

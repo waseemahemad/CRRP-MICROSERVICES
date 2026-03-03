@@ -1,4 +1,0 @@
-package com.customer.demo.repository;
-public interface CustomerRepository extends JpaRepository<Customer, Long> {
-    Optional<Customer> findByRegistrationNumber(String registrationNumber);
-}
